@@ -10,4 +10,4 @@
 - Admin สามารถดูรายชื่อผู้ใช้พร้อมห้องที่จองได้ผ่าน Admin page ที่พวกเราสร้างไว้
 
 ## Link to Video
-[![Describe about system](https://drive.google.com/file/d/1peHkxXTHTsM5W1WoEOF4Ss0fc3rIBHsu/view?usp=sharing)](https://drive.google.com/file/d/1peHkxXTHTsM5W1WoEOF4Ss0fc3rIBHsu/view?usp=sharing)
+[Link to Google Drive](https://drive.google.com/file/d/1peHkxXTHTsM5W1WoEOF4Ss0fc3rIBHsu/view?usp=sharing)
