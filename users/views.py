@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 
+# หน้าหลัก
 def index(request):
     if not request.user.is_authenticated:
         return redirect("Login")
@@ -11,6 +12,7 @@ def index(request):
     return render(request, "room/home.html")
 
 
+# ใช้ login
 def login_views(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -22,8 +24,8 @@ def login_views(request):
             # admin:index เป็น url ที่ Django กำหนดไว้ให้เป็นหน้า admin page
             # return redirect(reverse("admin:index"))
 
-            return redirect("home") #return render(request, "room/home.html")
-    
+            return redirect("home")  # return render(request, "room/home.html")
+
         else:
             return render(
                 request, "users/login.html", {"message": "Invalid credentials."}
@@ -31,12 +33,14 @@ def login_views(request):
     return render(request, "users/login.html")
 
 
+# ใช้เมื่อมีการ logout
 def logout_views(request):
     logout(request)
     context = {"message": "You're Logout"}
     return render(request, "users/login.html", context)
 
 
+# ใช้สำหรับ register
 def register_views(request):
     if request.method == "POST":
         username = request.POST["Username"]
@@ -58,7 +62,9 @@ def register_views(request):
                 "users/register.html",
                 {"message": "This Username already registry, Please try again."},
             )
-        User.objects.create_user(username=username, password=password, first_name=first_name, email=email)
+        User.objects.create_user(
+            username=username, password=password, first_name=first_name, email=email
+        )
         return render(
             request,
             "users/login.html",
