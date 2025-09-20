@@ -9,5 +9,8 @@
 - Users สามาถดูรายการห้องที่เปิดให้จองและสามารถทำการจองได้หากยังมีชั่วโมงว่าง และสามารถดูหรือยกเลิกรายการห้องที่ตนจองสำเร็จได้ โดยห้องที่สามารถจองได้ จะต้องมีชั่วโมงเหลือมากกว่า 1 ชั่วโมง เเละห้องนั้นจำเป็นจะต้องเปิดให้จอง(Available) ถ้ามีไม่ตรงเงื่อนไขทั้ง 2 การจองจะไม่สามารถทำได้ เเละจะไม่ส่งผลต่อสถานะของห้องเเละการ booking ของ User
 - Admin สามารถดูรายชื่อผู้ใช้พร้อมห้องที่จองได้ผ่าน Admin page ที่พวกเราสร้างไว้
 
+## Link to Web App
+[Reservation Room System](https://cn331-as2-rt8d.onrender.com/)
+
 ## Link to Video
-[Link to Google Drive](https://drive.google.com/file/d/1peHkxXTHTsM5W1WoEOF4Ss0fc3rIBHsu/view?usp=sharing)
+[Link to Google Drive](https://drive.google.com/file/d/1s26MH9OnsRwlPYK9YLFX_nCZz6ZWzn_a/view?usp=sharing)
