@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib import admin
 from . import views
-
+app_name="Room"
 urlpatterns = [
     path("home/", views.home, name="home"),
     path("available-room/", views.allroom, name="available"),
