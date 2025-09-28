@@ -78,8 +78,8 @@ def deleteroom(request):
         room_code = request.POST["room_code"]
         room = get_object_or_404(Room, room_code=room_code)
         room.delete()
-        return redirect("deletepage")
-    return redirect("deletepage")
+        return redirect("Room:deletepage")
+    return redirect("Room:deletepage")
 
 
 # เอาไว้แก้ไขห้อง
@@ -105,7 +105,7 @@ def editroom(request, room_code):
             else:
                 room.is_available = False
             room.save()
-            return redirect("available")
+            return redirect("Room:available")
     return render(request, "room/editroom.html", {"room": room})
 
 
@@ -143,17 +143,16 @@ def booking(request):
 
 # ใช้ยกเลิกการจองห้อง
 def cancel(request):
-    id = request.GET.get("id")
-    booking = Booking.objects.get(pk=id)
-    booking.delete()
+    booking_id = request.GET.get("id")  # ดึงจาก query param
+    booking = get_object_or_404(Booking, pk=booking_id)
     room = get_object_or_404(Room, pk=booking.room_id)
+    booking.delete()
+
     if room.available_hours < 24:
         room.available_hours += 1
         room.save()
-    return render(request, "room/home.html")
+    return redirect("Room:mybooking")
 
-
-# ใช้ดูว่าการจองห้อง
 def allbooking(request):
     all_booking = Booking.objects.all()
 
