@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Room, Booking
 
+
 # ----------------------------
 # Test ห้องและ Booking ทั่วไป
 # ----------------------------
@@ -28,8 +29,7 @@ class RoomTestCase(TestCase):
 
         # สร้าง booking สำหรับ room1
         self.booking1 = Booking.objects.create(
-            room=self.room1,
-            username=self.user.username
+            room=self.room1, username=self.user.username
         )
 
     def test_room_created(self):
@@ -52,6 +52,7 @@ class RoomTestCase(TestCase):
 
     def test_booking_str(self):
         self.assertEqual(str(self.booking1), f"testuser ({self.room1.room_code})")
+
 
 # ----------------------------
 # Test การจอง
@@ -89,8 +90,13 @@ class BookingTestCase(TestCase):
 
     def test_booking_unavailable_room(self):
         # ไม่ควรสร้าง booking เมื่อ room ไม่ว่างหรือ available_hours=0
-        if self.room_unavailable.is_available and self.room_unavailable.available_hours > 0:
-            Booking.objects.create(room=self.room_unavailable, username=self.user.username)
+        if (
+            self.room_unavailable.is_available
+            and self.room_unavailable.available_hours > 0
+        ):
+            Booking.objects.create(
+                room=self.room_unavailable, username=self.user.username
+            )
         self.assertEqual(Booking.objects.filter(room=self.room_unavailable).count(), 0)
 
     def test_booking_duplicate(self):
@@ -108,6 +114,7 @@ class BookingTestCase(TestCase):
         room.save()
         room.refresh_from_db()
         self.assertEqual(room.available_hours, 3)
+
 
 # ----------------------------
 # Test แก้ไขและลบห้อง
@@ -134,7 +141,9 @@ class RoomEditDeleteTestCase(TestCase):
         )
 
         # สร้าง booking สำหรับ room1
-        self.booking1 = Booking.objects.create(room=self.room1, username=self.user.username)
+        self.booking1 = Booking.objects.create(
+            room=self.room1, username=self.user.username
+        )
 
     def test_edit_room(self):
         # แก้ไข room1
@@ -153,7 +162,11 @@ class RoomEditDeleteTestCase(TestCase):
         self.assertFalse(updated.is_available)
 
     def test_edit_room_duplicate_code(self):
-        duplicate_exists = Room.objects.filter(room_code=self.room2.room_code).exclude(pk=self.room1.pk).exists()
+        duplicate_exists = (
+            Room.objects.filter(room_code=self.room2.room_code)
+            .exclude(pk=self.room1.pk)
+            .exists()
+        )
         self.assertTrue(duplicate_exists)
 
     def test_delete_room(self):
