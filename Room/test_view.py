@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Room, Booking
 
+
 class RoomViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -38,7 +39,9 @@ class RoomViewsTestCase(TestCase):
         self.assertContains(response, self.room2.room_name)
 
     def test_selectroom_view(self):
-        response = self.client.get(reverse("Room:selectroom", args=[self.room1.room_code]))
+        response = self.client.get(
+            reverse("Room:selectroom", args=[self.room1.room_code])
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.room1.room_name)
 
@@ -47,7 +50,7 @@ class RoomViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "room/addroom.html")
 
-    def test_saveroom_view_post(self):
+    def test_saveroom_view_post_True(self):
         response = self.client.post(
             reverse("Room:saveroom"),
             {
@@ -62,6 +65,21 @@ class RoomViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Room.objects.filter(room_code=3).exists())
 
+    def test_saveroom_view_post_False(self):
+        response = self.client.post(
+            reverse("Room:saveroom"),
+            {
+                "room_code": 7,
+                "room_name": "cn777",
+                "room_capacity": 9,
+                "available_hours": 12,
+                "room_state": "False",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Room.objects.filter(room_code=7).exists())
+
     def test_saveroom_view_get_default_render(self):
         # Trigger line: return render(request, "room/addroom.html") สำหรับ GET
         response = self.client.get(reverse("Room:saveroom"))
@@ -73,17 +91,43 @@ class RoomViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "room/deleteroom.html")
 
+    def test_deleteroom_view(self):
+        response = self.client.get(reverse("Room:deleteroom"))
+        self.assertEqual(response.status_code, 302)
+
     def test_deleteroom_view_post(self):
-        response = self.client.post(reverse("Room:deleteroom"), {"room_code": self.room2.room_code}, follow=True)
+        response = self.client.post(
+            reverse("Room:deleteroom"), {"room_code": self.room2.room_code}, follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Room.objects.filter(pk=self.room2.pk).exists())
 
     def test_editroom_view_get(self):
-        response = self.client.get(reverse("Room:editroom", args=[self.room1.room_code]))
+        response = self.client.get(
+            reverse("Room:editroom", args=[self.room1.room_code])
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "room/editroom.html")
 
-    def test_editroom_view_post(self):
+    def test_editroom_view_post_True(self):
+        response = self.client.post(
+            reverse("Room:editroom", args=[self.room1.room_code]),
+            {
+                "room_code": 9,
+                "room_name": "cn999",
+                "room_capacity": 4,
+                "available_hours": 23,
+                "room_state": "True",
+            },
+            follow=True,
+        )
+        self.room1.refresh_from_db()
+        self.assertEqual(self.room1.room_code, 9)
+        self.assertEqual(self.room1.room_name, "cn999")
+        self.assertEqual(self.room1.room_capacity, 4)
+        self.assertTrue(self.room1.is_available)
+
+    def test_editroom_view_post_False(self):
         response = self.client.post(
             reverse("Room:editroom", args=[self.room1.room_code]),
             {
@@ -95,6 +139,7 @@ class RoomViewsTestCase(TestCase):
             },
             follow=True,
         )
+
         self.room1.refresh_from_db()
         self.assertEqual(self.room1.room_code, 4)
         self.assertEqual(self.room1.room_name, "cn333")
@@ -111,7 +156,7 @@ class RoomViewsTestCase(TestCase):
                 "room_capacity": 5,
                 "available_hours": 2,
                 "room_state": "True",
-            }
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "This room code already exist.")
@@ -123,17 +168,27 @@ class RoomViewsTestCase(TestCase):
         self.assertContains(response, self.room1.room_name)
 
     def test_booking_view_post(self):
-        response = self.client.post(reverse("Room:booking"), {"room_code": self.room1.room_code}, follow=True)
+        response = self.client.post(
+            reverse("Room:booking"), {"room_code": self.room1.room_code}, follow=True
+        )
         self.assertEqual(response.status_code, 200)
-        booking = Booking.objects.filter(room=self.room1, username=self.user.username).first()
+        booking = Booking.objects.filter(
+            room=self.room1, username=self.user.username
+        ).first()
         self.assertIsNotNone(booking)
         self.room1.refresh_from_db()
         self.assertEqual(self.room1.available_hours, 1)
 
     def test_booking_unavailable_room(self):
-        response = self.client.post(reverse("Room:booking"), {"room_code": self.room2.room_code}, follow=True)
+        response = self.client.post(
+            reverse("Room:booking"), {"room_code": self.room2.room_code}, follow=True
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(Booking.objects.filter(room=self.room2, username=self.user.username).exists())
+        self.assertFalse(
+            Booking.objects.filter(
+                room=self.room2, username=self.user.username
+            ).exists()
+        )
 
     def test_booking_get_default_render(self):
         # Trigger line: return render(request, "room/home.html") สำหรับ GET
@@ -143,21 +198,23 @@ class RoomViewsTestCase(TestCase):
 
     def test_cancel_view(self):
         booking = Booking.objects.create(room=self.room1, username=self.user.username)
-        response = self.client.get(reverse("Room:cancel") + f"?id={booking.id}", follow=True)
+        response = self.client.get(
+            reverse("Room:cancel") + f"?id={booking.id}", follow=True
+        )
         self.room1.refresh_from_db()
         self.assertEqual(self.room1.available_hours, 3)
 
     def test_allbooking_view_get(self):
         # สร้าง booking เพื่อให้ context['allbooking'] มีข้อมูล
         Booking.objects.create(room=self.room1, username=self.user.username)
-        
+
         # เรียก view แบบ GET
         response = self.client.get(reverse("Room:allbooking"))
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "room/allbooking.html")
-        
+
         # ตรวจ context ว่ามี booking
-        self.assertIn('allbooking', response.context)
-        self.assertEqual(len(response.context['allbooking']), 1)
-        self.assertEqual(response.context['allbooking'][0].room, self.room1)
+        self.assertIn("allbooking", response.context)
+        self.assertEqual(len(response.context["allbooking"]), 1)
+        self.assertEqual(response.context["allbooking"][0].room, self.room1)
