@@ -17,7 +17,7 @@
   <!-- ฟอร์มบันทึกห้อง -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <form action="{% url 'saveroom' %}" method="post">
+      <form action="{% url 'Room:saveroom' %}" method="post">
         {% csrf_token %}
         <div class="form-group mb-3">
 
@@ -66,7 +66,7 @@
         <div class="d-flex overflow-auto gap-2 p-2">
           <select name="room" onchange="location = this.value;">
             {% for room in roomlist %}
-               <option value="{% url 'selectroom' room.room_code %}">
+               <option value="{% url 'Room:selectroom' room.room_code %}">
                 Room {{ room.room_code }}: {{ room.room_name }} | 
                 Hours available: {{ room.available_hours }} |
                 Capacity : {{ room.room_capacity }} |

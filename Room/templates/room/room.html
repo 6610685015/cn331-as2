@@ -4,21 +4,23 @@
 
 <ul>
     <li>Name: {{ room.name }}</li>
-    <li>Capacity: {{room.capacity}}</li>
-    <li>State: {{ room.room_state }}</li>
+    <li>Capacity: {{ room.capacity }}</li>
+    <li>State: {% if room.is_available %}Available{% else %}Not Available{% endif %}</li>
 </ul>
 
 <h2>Booking</h2>
-<form action="{% url 'booking' room.code %}" method="POST">
+<form action="{% url 'Room:selectroom' room_code=room.code %}" method="POST">
     {% csrf_token %}
     <select name="guest">
         {% for guest in non_guest %}
         <option value="{{ guest.id }}">{{ guest }}</option>
         {% endfor %}
     </select>
-    <input type="submit" value="Booking">
+    <button type="submit" class="btn btn-success" {% if not room.is_available %}disabled{% endif %}>
+        Book
+    </button>
 </form>
 
-<a href="{% url 'available' %}">Back to Room List</a>
+<a href="{% url 'Room:available' %}" class="btn btn-outline-secondary mt-3">Back to Room List</a>
 
 {% endblock %}

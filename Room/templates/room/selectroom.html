@@ -19,19 +19,19 @@
       </p>
 
       <!-- ปุ่ม Booking -->
-      <form action="{% url 'booking' %}" method="POST">
+      <form action="{% url 'Room:selectroom' room_code=room_code %}" method="POST">
         {% csrf_token %}
 
         {% if request.user.is_superuser %}
-          <a href="{% url 'editroom' room_code %}" class="btn btn-success">Edit Room</a>
+          <a href="{% url 'Room:editroom' room_code=room_code %}" class="btn btn-success">Edit Room</a>
+        {% else %}
+          <input type="hidden" name="room_code" value="{{ room_code }}" />
+          <button type="submit" class="btn btn-success" {% if not is_available %}disabled{% endif %}>
+            Book This Room
+          </button>
         {% endif %}
 
-        {% if not request.user.is_superuser %}
-          <input type="hidden" name="room_code" value= {{room_code}} />
-          <button type="submit" class="btn btn-success">Book This Room</button>
-        {% endif %}
-
-        <a href="{% url 'available' %}" class="btn btn-outline-secondary ms-2">Back to Room List</a>
+        <a href="{% url 'Room:available' %}" class="btn btn-outline-secondary ms-2">Back to Room List</a>
       </form>
     </div>
   </div>

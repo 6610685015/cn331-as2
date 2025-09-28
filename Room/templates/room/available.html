@@ -16,8 +16,8 @@
         {% for room in allroom %}
           {% if room.is_available and room.available_hours != 0 %}
             <li class="list-group-item">
-              <a href="{% url 'selectroom' room.room_code %}">
-                <strong>Room {{ room.room_code }}</strong>: {{ room.room_name }}
+              <a href="{% url 'Room:selectroom' room.room_code %}">
+                <strong>Room {{ room.room_name }} ({{ room.room_code }})</strong>: {{ room.room_name }}
               </a>
               <p>
                 Hours available: {{ room.available_hours }} |

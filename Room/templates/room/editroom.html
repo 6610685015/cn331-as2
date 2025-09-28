@@ -17,8 +17,9 @@
   <!-- ฟอร์มแก้ไขห้อง -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <form action="{% url 'editroom' room.room_code %}" method="post">
+    <form action="{% url 'Room:editroom' room.room_code %}" method="post">
         {% csrf_token %}
+        
         <div class="form-group mb-3">
 
           <label for="room_code">Room Code</label>

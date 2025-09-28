@@ -17,11 +17,11 @@
         {% for booking in room_groups %}
             <li class="list-group-item">
               <!--.grouper คือ ค้าที่ใช้เป็น group ในที่นี้ก็คือ Field room-->
-              <a href="{% url 'selectroom' booking.grouper.room_code %}">
+              <a href="{% url 'Room:selectroom' booking.grouper.room_code %}">
                 <strong>Room {{ booking.grouper.room_code }}</strong>: {{ booking.grouper.room_name }}
               </a>
               <!--.list คือ list ของรายการ booking ที่อยู่ใน group-->
-              {% for booking in booking.list%}
+              {% for booking in booking.list %}
                 <p>Username: {{ booking.username }}</p>
               {% endfor %}    
             </li>

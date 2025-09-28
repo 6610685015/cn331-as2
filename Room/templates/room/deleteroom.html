@@ -11,8 +11,8 @@
   <!-- ฟอร์มลบห้อง -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <form action="{% url 'deleteroom' %}" method="post">
-        {% csrf_token %}
+      <form action="{% url 'Room:deleteroom' %}" method="post">
+          {% csrf_token %}
         <div class="form-group mb-3">
 
             <label for="room_code">Room Code</label>

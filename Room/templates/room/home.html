@@ -28,10 +28,8 @@
       {% endif %}
 
       <ul class="list-group list-group-flush">
-
         <li class="list-group-item"><strong>Username:</strong> {{ request.user.username }}</li>
         <li class="list-group-item"><strong>Email:</strong> {{ request.user.email }}</li>
-      
       </ul>
     </div>
   </div>
@@ -42,19 +40,22 @@
       <h5 class="card-title">Navigation</h5>
       <div class="list-group">
 
-        <a href="{% url 'available' %}" class="list-group-item list-group-item-action">📋 See all available rooms</a>
+        <!-- ลิงก์ดูห้องว่าง -->
+        <a href="{% url 'Room:available' %}" class="list-group-item list-group-item-action">📋 See all available rooms</a>
         
+        <!-- ลิงก์เฉพาะ user ปกติ -->
         {% if not request.user.is_superuser %}
-          <a href="{% url 'mybooking' %}" class="list-group-item list-group-item-action">📅 See your bookings</a>
+          <a href="{% url 'Room:mybooking' %}" class="list-group-item list-group-item-action">📅 See your bookings</a>
         {% endif %}
 
+        <!-- ลิงก์เฉพาะ admin -->
         {% if request.user.is_superuser %}
-          <a href="{% url 'addroom' %}" class="list-group-item list-group-item-action">➕ Add a new room</a>
-          <a href="{% url 'deletepage' %}" class="list-group-item list-group-item-action">❌ Delete room</a>
-          <a href="{% url 'allbooking' %}" class="list-group-item list-group-item-action">🏠 See All Booking</a>
-    
+          <a href="{% url 'Room:addroom' %}" class="list-group-item list-group-item-action">➕ Add a new room</a>
+          <a href="{% url 'Room:deletepage' %}" class="list-group-item list-group-item-action">❌ Delete room</a>
+          <a href="{% url 'Room:allbooking' %}" class="list-group-item list-group-item-action">🏠 See All Booking</a>
         {% endif %}
 
+        <!-- ลิงก์ Logout -->
         <a href="{% url 'Logout' %}" class="list-group-item list-group-item-action text-danger">🚪 Log Out</a>
       
       </div>
