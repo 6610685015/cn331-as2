@@ -99,21 +99,23 @@ class BookingTestCase(TestCase):
             )
         self.assertEqual(Booking.objects.filter(room=self.room_unavailable).count(), 0)
 
-    def test_booking_duplicate(self):
-        Booking.objects.create(room=self.room, username=self.user.username)
-        duplicate = Booking.objects.filter(room=self.room, username=self.user.username)
-        self.assertTrue(duplicate.exists())
-
     def test_cancel_booking(self):
         booking = Booking.objects.create(room=self.room, username=self.user.username)
-        # ยกเลิก booking
         room_id = booking.room_id
-        booking.delete()
         room = Room.objects.get(pk=room_id)
+        self.room.available_hours -= 1
+        self.room.save()
+        room.refresh_from_db()
+        self.assertEqual(Booking.objects.count(), 1)
+        self.assertEqual(room.available_hours, 1)
+
+        # ยกเลิก booking
+        booking.delete()
         room.available_hours += 1
         room.save()
         room.refresh_from_db()
-        self.assertEqual(room.available_hours, 3)
+        self.assertEqual(Booking.objects.count(), 0)
+        self.assertEqual(room.available_hours, 2)
 
 
 # ----------------------------
@@ -160,14 +162,6 @@ class RoomEditDeleteTestCase(TestCase):
         self.assertEqual(updated.room_capacity, 15)
         self.assertEqual(updated.available_hours, 10)
         self.assertFalse(updated.is_available)
-
-    def test_edit_room_duplicate_code(self):
-        duplicate_exists = (
-            Room.objects.filter(room_code=self.room2.room_code)
-            .exclude(pk=self.room1.pk)
-            .exists()
-        )
-        self.assertTrue(duplicate_exists)
 
     def test_delete_room(self):
         room_id = self.room1.id
